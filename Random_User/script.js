@@ -1,11 +1,22 @@
 function fetchUser() {
     showSpinner();
-    fetch('https://randomuser.me/api')
-        .then((res) => res.json())
-        .then((data) => {
-            hideSpinner();
-            displayUser(data.results[0]);
-        });
+  fetch('https://randomuser.me/api')
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error('Request Failed');
+      }
+        
+      return res.json()
+    })
+    .then((data) => {
+      hideSpinner();
+      displayUser(data.results[0]);
+    })
+    .catch((error) => {
+      hideSpinner();
+      document.querySelector('#user').innerHTML = 
+      `<p class="text-xl text-center text-red-500 mb-5">${error}</p>`;
+    });
 }
 
 function displayUser(user) {
@@ -20,7 +31,7 @@ function displayUser(user) {
 
     userDisplay.innerHTML = `
         <div class="flex justify-between">
-          <div class="flex">
+          <div class="flex flex-wrap justify-center">
             <img
               class="w-48 h-48 rounded-full mr-8"
               src="${user.picture.large}"
